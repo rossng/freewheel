@@ -2,7 +2,6 @@ import {
   Button,
   ChakraProvider,
   FormControl,
-  FormHelperText,
   FormLabel,
   Heading,
   NumberDecrementStepper,
@@ -14,12 +13,16 @@ import {
 } from "@chakra-ui/react";
 import { useMutation } from "@tanstack/react-query";
 import { atom, useAtom } from "jotai";
-import { scrollPage } from "./scroll";
+import { ScrollOptions, scrollPage } from "./scroll";
 
-const pixelsAtom = atom(500);
+const optionsAtom = atom<ScrollOptions>({
+  pixels: 500,
+  duration: 2000,
+  easing: "linear",
+});
 
 export function Form() {
-  const [pixels, setPixels] = useAtom(pixelsAtom);
+  const [options, setOptions] = useAtom(optionsAtom);
 
   const scrollMutation = useMutation({
     mutationKey: ["scroll"],
@@ -31,13 +34,17 @@ export function Form() {
       if (!tab.length || tab[0].id === undefined) {
         throw new Error("No tab found");
       }
-      return browser.scripting.executeScript({
+      const promise = browser.scripting.executeScript({
         target: {
           tabId: tab[0].id,
         },
         func: scrollPage as any,
-        args: [pixels],
+        args: [options],
       });
+
+      window.close();
+
+      await promise;
     },
   });
 
@@ -46,13 +53,14 @@ export function Form() {
       <VStack padding={2}>
         <Heading as="h1">Freewheel</Heading>
         <FormControl>
-          <FormLabel>Pixels</FormLabel>
+          <FormLabel>Distance (pixels)</FormLabel>
           <NumberInput
-            defaultValue={15}
-            min={10}
-            max={20}
-            value={pixels}
-            onChange={(_, px) => setPixels(px)}
+            defaultValue={500}
+            step={100}
+            value={options.pixels}
+            onChange={(_, value) =>
+              !isNaN(value) && setOptions((options) => ({ ...options, pixels: value }))
+            }
           >
             <NumberInputField />
             <NumberInputStepper>
@@ -60,7 +68,24 @@ export function Form() {
               <NumberDecrementStepper />
             </NumberInputStepper>
           </NumberInput>
-          <FormHelperText>Number of pixels to scroll.</FormHelperText>
+        </FormControl>
+        <FormControl>
+          <FormLabel>Duration (ms)</FormLabel>
+          <NumberInput
+            defaultValue={2000}
+            step={500}
+            min={0}
+            value={options.duration}
+            onChange={(_, value) =>
+              !isNaN(value) && setOptions((options) => ({ ...options, duration: value }))
+            }
+          >
+            <NumberInputField />
+            <NumberInputStepper>
+              <NumberIncrementStepper />
+              <NumberDecrementStepper />
+            </NumberInputStepper>
+          </NumberInput>
         </FormControl>
         <Button onClick={() => scrollMutation.mutate()}>Scroll!</Button>
       </VStack>
