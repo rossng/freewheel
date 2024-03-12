@@ -1,0 +1,36 @@
+{
+  "name": "freewheel",
+  "version": "1.0.0",
+  "description": "A Web Extension that automatically scrolls webpages so that you can make nice screen recordings.",
+  "scripts": {
+    "start": "parcel watch src/manifest.json --host localhost --config @parcel/config-webextension",
+    "build": "rimraf .parcel-cache && rimraf dist && parcel build src/manifest.json --config @parcel/config-webextension",
+    "analyse": "parcel build src/popup.html --config @parcel/config-webextension --reporter @parcel/reporter-bundle-analyzer"
+  },
+  "keywords": [],
+  "author": "Ross Gardiner",
+  "license": "BlueOak-1.0.0",
+  "packageManager": "pnpm@8.15.4",
+  "devDependencies": {
+    "@parcel/config-webextension": "^2.12.0",
+    "@parcel/reporter-bundle-analyzer": "^2.12.0",
+    "@types/firefox-webext-browser": "^120.0.3",
+    "@types/react": "^18.2.64",
+    "@types/react-dom": "^18.2.21",
+    "parcel": "^2.12.0",
+    "prettier": "^3.2.5",
+    "prettier-plugin-organize-imports": "^3.2.4",
+    "rimraf": "^5.0.5",
+    "typescript": "^5.4.2"
+  },
+  "dependencies": {
+    "@chakra-ui/react": "^2.8.2",
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.0",
+    "@tanstack/react-query": "^5.27.5",
+    "framer-motion": "^11.0.8",
+    "jotai": "^2.7.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  }
+}
