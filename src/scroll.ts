@@ -22,16 +22,37 @@ export function scrollPage(settings: ScrollOptions) {
   const startTime = performance.now();
   const startY = window.scrollY;
 
+  let isAborted = false;
+
+  function onKeyPress(event: KeyboardEvent) {
+    if (event.key === "Escape") {
+      isAborted = true;
+      document.removeEventListener("keydown", onKeyPress);
+    }
+  }
+
+  document.addEventListener("keydown", onKeyPress);
+
   function scroll() {
-    const elapsed = performance.now() - startTime;
-    const normalizedTime = Math.min(elapsed / settings.duration, 1);
-    const interpolatedPosition = interpolate(normalizedTime);
-    const targetY = startY + settings.pixels * interpolatedPosition;
+    if (isAborted) {
+      return;
+    }
 
-    window.scrollTo(0, targetY);
+    try {
+      const elapsed = performance.now() - startTime;
+      const normalizedTime = Math.min(elapsed / settings.duration, 1);
+      const interpolatedPosition = interpolate(normalizedTime);
+      const targetY = startY + settings.pixels * interpolatedPosition;
 
-    if (elapsed < settings.duration) {
-      requestAnimationFrame(scroll);
+      window.scrollTo(0, targetY);
+
+      if (elapsed < settings.duration) {
+        requestAnimationFrame(scroll);
+      } else {
+        document.removeEventListener("keydown", onKeyPress);
+      }
+    } catch {
+      document.removeEventListener("keydown", onKeyPress);
     }
   }
 
