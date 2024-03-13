@@ -42,14 +42,18 @@ export interface ScrollOptions {
    * The easing function to use for the scroll.
    */
   easing: InterpolationMethod;
+  /**
+   * The delay before the scroll starts in milliseconds.
+   */
+  delay: number;
 }
 
 /**
  * Scroll the page downwards with the given settings.
  */
 export function scrollPage(settings: ScrollOptions) {
-  const startTime = performance.now();
-  const startY = window.scrollY;
+  let startTime = performance.now();
+  let startY = window.scrollY;
 
   let isAborted = false;
 
@@ -110,5 +114,18 @@ export function scrollPage(settings: ScrollOptions) {
     }
   }
 
-  requestAnimationFrame(scroll);
+  if (settings.delay > 0) {
+    setTimeout(() => {
+      if (isAborted) {
+        return;
+      }
+      startTime = performance.now();
+      startY = window.scrollY;
+      requestAnimationFrame(scroll);
+    }, settings.delay);
+  } else {
+    startTime = performance.now();
+    startY = window.scrollY;
+    requestAnimationFrame(scroll);
+  }
 }

@@ -21,6 +21,7 @@ const optionsAtom = atom<ScrollOptions>({
   pixels: 500,
   duration: 2000,
   easing: "linear",
+  delay: 0,
 });
 
 const icon = new URL("images/icon-96.png", import.meta.url);
@@ -72,7 +73,6 @@ export function Form() {
         <FormControl>
           <FormLabel>Distance (pixels)</FormLabel>
           <NumberInput
-            defaultValue={500}
             step={100}
             value={options.pixels}
             onChange={(_, value) =>
@@ -89,7 +89,6 @@ export function Form() {
         <FormControl>
           <FormLabel>Duration (ms)</FormLabel>
           <NumberInput
-            defaultValue={2000}
             step={500}
             min={0}
             value={options.duration}
@@ -122,6 +121,23 @@ export function Form() {
               </option>
             ))}
           </Select>
+        </FormControl>
+        <FormControl>
+          <FormLabel>Delay (ms)</FormLabel>
+          <NumberInput
+            step={500}
+            min={0}
+            value={options.delay}
+            onChange={(_, value) =>
+              !isNaN(value) && setOptions((options) => ({ ...options, delay: value }))
+            }
+          >
+            <NumberInputField />
+            <NumberInputStepper>
+              <NumberIncrementStepper />
+              <NumberDecrementStepper />
+            </NumberInputStepper>
+          </NumberInput>
         </FormControl>
         <Button onClick={() => scrollMutation.mutate()} colorScheme="teal">
           Scroll!
