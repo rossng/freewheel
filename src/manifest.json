@@ -4,6 +4,11 @@
   "name": "Freewheel",
   "version": "0.0.1",
   "description": "Freewheel automatically scrolls the page for you so that you can record slick screen captures.",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "{f3ba6ec7-7fa4-4081-b888-27e826dc3c3f}"
+    }
+  },
 
   "icons": {
     "16": "images/icon-16.png",
