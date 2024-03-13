@@ -1,9 +1,10 @@
 import {
   Button,
-  ChakraProvider,
+  Flex,
   FormControl,
   FormLabel,
   Heading,
+  Image,
   NumberDecrementStepper,
   NumberIncrementStepper,
   NumberInput,
@@ -20,6 +21,8 @@ const optionsAtom = atom<ScrollOptions>({
   duration: 2000,
   easing: "linear",
 });
+
+const icon = new URL("images/icon-96.png", import.meta.url);
 
 export function Form() {
   const [options, setOptions] = useAtom(optionsAtom);
@@ -49,9 +52,22 @@ export function Form() {
   });
 
   return (
-    <ChakraProvider>
-      <VStack padding={2}>
-        <Heading as="h1">Freewheel</Heading>
+    <Flex direction="row">
+      <VStack alignItems="center" justifyContent="center" padding={2}>
+        <Image src={icon.toString()} alt="Freewheel icon" maxHeight="1rem" />
+        <Heading
+          as="h1"
+          size="sm"
+          fontWeight="normal"
+          style={{
+            textOrientation: "upright",
+            writingMode: "vertical-lr",
+          }}
+        >
+          Freewheel
+        </Heading>
+      </VStack>
+      <VStack padding={2} backgroundColor="teal.50">
         <FormControl>
           <FormLabel>Distance (pixels)</FormLabel>
           <NumberInput
@@ -87,8 +103,10 @@ export function Form() {
             </NumberInputStepper>
           </NumberInput>
         </FormControl>
-        <Button onClick={() => scrollMutation.mutate()}>Scroll!</Button>
+        <Button onClick={() => scrollMutation.mutate()} colorScheme="teal">
+          Scroll!
+        </Button>
       </VStack>
-    </ChakraProvider>
+    </Flex>
   );
 }
