@@ -10,11 +10,12 @@ import {
   NumberInput,
   NumberInputField,
   NumberInputStepper,
+  Select,
   VStack,
 } from "@chakra-ui/react";
 import { useMutation } from "@tanstack/react-query";
 import { atom, useAtom } from "jotai";
-import { ScrollOptions, scrollPage } from "./scroll";
+import { ScrollOptions, interpolationMethods, isInterpolationMethod, scrollPage } from "./scroll";
 
 const optionsAtom = atom<ScrollOptions>({
   pixels: 500,
@@ -102,6 +103,25 @@ export function Form() {
               <NumberDecrementStepper />
             </NumberInputStepper>
           </NumberInput>
+        </FormControl>
+        <FormControl>
+          <FormLabel>Easing</FormLabel>
+          <Select
+            placeholder="Select option"
+            value={options.easing}
+            onChange={(ev) => {
+              const value = ev.target.value;
+              if (isInterpolationMethod(value)) {
+                setOptions((options) => ({ ...options, easing: value }));
+              }
+            }}
+          >
+            {interpolationMethods.map((method) => (
+              <option key={method} value={method}>
+                {method}
+              </option>
+            ))}
+          </Select>
         </FormControl>
         <Button onClick={() => scrollMutation.mutate()} colorScheme="teal">
           Scroll!
