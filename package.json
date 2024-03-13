@@ -5,6 +5,7 @@
   "scripts": {
     "start": "parcel watch src/manifest.json --host localhost --config @parcel/config-webextension",
     "build": "rimraf .parcel-cache && rimraf dist && parcel build src/manifest.json --config @parcel/config-webextension",
+    "build:prod": "rimraf .parcel-cache && rimraf dist && parcel build src/manifest.json --no-source-maps --config @parcel/config-webextension",
     "analyse": "parcel build src/popup.html --config @parcel/config-webextension --reporter @parcel/reporter-bundle-analyzer"
   },
   "keywords": [],
