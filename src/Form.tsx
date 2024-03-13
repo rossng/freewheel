@@ -4,6 +4,7 @@ import {
   FormControl,
   FormLabel,
   Heading,
+  IconButton,
   Image,
   NumberDecrementStepper,
   NumberIncrementStepper,
@@ -14,14 +15,37 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { useMutation } from "@tanstack/react-query";
-import { atom, useAtom } from "jotai";
+import { useAtom } from "jotai";
+import { atomWithStorage } from "jotai/utils";
+import { AsyncStorage } from "jotai/vanilla/utils/atomWithStorage";
+import { RxReset } from "react-icons/rx";
 import { ScrollOptions, interpolationMethods, isInterpolationMethod, scrollPage } from "./scroll";
 
-const optionsAtom = atom<ScrollOptions>({
+function makeStorage<T>(): AsyncStorage<T> {
+  return {
+    async getItem(key, initialValue) {
+      const stored = await browser.storage.local.get(key);
+      return stored[key] ?? initialValue;
+    },
+    async setItem(key, newValue) {
+      const value = await newValue;
+      await browser.storage.local.set({ [key]: newValue });
+    },
+    async removeItem(key) {
+      await browser.storage.local.remove(key);
+    },
+  };
+}
+
+const defaultOptions: ScrollOptions = {
   pixels: 500,
   duration: 2000,
   easing: "linear",
   delay: 0,
+};
+
+const optionsAtom = atomWithStorage<ScrollOptions>("options", defaultOptions, makeStorage(), {
+  getOnInit: true,
 });
 
 const icon = new URL("images/icon-96.png", import.meta.url);
@@ -55,19 +79,28 @@ export function Form() {
 
   return (
     <Flex direction="row">
-      <VStack alignItems="center" justifyContent="center" padding={2}>
-        <Image src={icon.toString()} alt="Freewheel icon" maxHeight="1rem" />
-        <Heading
-          as="h1"
+      <VStack alignItems="center" justifyContent="space-between" padding={2}>
+        <VStack direction="column" margin="auto 0" justifyContent="center" flexGrow={1} gap={2}>
+          <Image src={icon.toString()} alt="Freewheel icon" maxHeight="1rem" />
+          <Heading
+            as="h1"
+            size="sm"
+            fontWeight="normal"
+            style={{
+              textOrientation: "upright",
+              writingMode: "vertical-lr",
+            }}
+          >
+            Freewheel
+          </Heading>
+        </VStack>
+        <IconButton
+          aria-label="Reset options"
+          icon={<RxReset />}
           size="sm"
-          fontWeight="normal"
-          style={{
-            textOrientation: "upright",
-            writingMode: "vertical-lr",
-          }}
-        >
-          Freewheel
-        </Heading>
+          title="Reset options"
+          onClick={() => setOptions(defaultOptions)}
+        />
       </VStack>
       <VStack padding={2} backgroundColor="teal.50">
         <FormControl>
@@ -76,7 +109,8 @@ export function Form() {
             step={100}
             value={options.pixels}
             onChange={(_, value) =>
-              !isNaN(value) && setOptions((options) => ({ ...options, pixels: value }))
+              !isNaN(value) &&
+              setOptions(async (options) => ({ ...(await options), pixels: value }))
             }
           >
             <NumberInputField />
@@ -93,7 +127,8 @@ export function Form() {
             min={0}
             value={options.duration}
             onChange={(_, value) =>
-              !isNaN(value) && setOptions((options) => ({ ...options, duration: value }))
+              !isNaN(value) &&
+              setOptions(async (options) => ({ ...(await options), duration: value }))
             }
           >
             <NumberInputField />
@@ -111,7 +146,7 @@ export function Form() {
             onChange={(ev) => {
               const value = ev.target.value;
               if (isInterpolationMethod(value)) {
-                setOptions((options) => ({ ...options, easing: value }));
+                setOptions(async (options) => ({ ...(await options), easing: value }));
               }
             }}
           >
@@ -129,7 +164,7 @@ export function Form() {
             min={0}
             value={options.delay}
             onChange={(_, value) =>
-              !isNaN(value) && setOptions((options) => ({ ...options, delay: value }))
+              !isNaN(value) && setOptions(async (options) => ({ ...(await options), delay: value }))
             }
           >
             <NumberInputField />

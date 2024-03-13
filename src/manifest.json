@@ -22,5 +22,5 @@
     "default_title": "Freewheel"
   },
 
-  "permissions": ["activeTab", "scripting", "tabs"]
+  "permissions": ["activeTab", "scripting", "storage", "tabs"]
 }
