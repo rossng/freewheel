@@ -3,6 +3,7 @@
   "manifest_version": 3,
   "name": "Freewheel",
   "version": "0.0.1",
+  "description": "Freewheel automatically scrolls the page for you so that you can record slick screen captures.",
 
   "icons": {
     "16": "images/icon-16.png",
