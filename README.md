@@ -14,3 +14,7 @@ Freewheel is a Web Extension that automatically scrolls the current browser tab 
 - `pnpm install`
 - `pnpm build` to build the extension to the `dist` directory.
 - `pnpm build:prod` will build the extension to the `dist` directory without source maps.
+
+## Licence
+
+The code in this repository is licensed under the Blue Oak Model License 1.0.0. Code in dependencies may be published under other open source licenses.
